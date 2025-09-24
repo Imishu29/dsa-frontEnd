@@ -16,7 +16,10 @@ export class ProgressService {
     return this.http.get<Progress[]>(`${this.apiUrl}/api/progress`);
   }
 
-  updateProgress(problemId: string, completed: boolean): Observable<Progress[]> {
-    return this.http.post<Progress[]>(`${this.apiUrl}/api/progress/${problemId}`, { completed });
+  updateProgress(problemId: string, data: any ): Observable<Progress[]> {
+    return this.http.post<Progress[]>(`${this.apiUrl}/api/progress/${problemId}`, data);
+  }
+  userProgess(userId:any){
+    return this.http.get(`${this.apiUrl}/api/progress/detailed/${userId}`)
   }
 }
