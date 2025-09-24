@@ -1,0 +1,175 @@
+<app-navbar></app-navbar>
+
+<div class="container mt-4">
+  <!-- Stats Cards -->
+  <div class="row mb-4">
+    <div class="col-md-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title">Total Progress</h5>
+          <div class="progress mb-2">
+            <div class="progress-bar" [style.width.%]="getProgressPercentage()">
+              {{ getProgressPercentage() }}%
+            </div>
+          </div>
+          <p class="card-text">{{ stats.completed }} / {{ stats.total }} Completed</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title text-success">Easy</h5>
+          <div class="progress mb-2">
+            <div class="progress-bar bg-success" [style.width.%]="getLevelProgressPercentage('easy')">
+              {{ getLevelProgressPercentage('easy') }}%
+            </div>
+          </div>
+          <p class="card-text">{{ stats.easy.completed }} / {{ stats.easy.total }}</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title text-warning">Medium</h5>
+          <div class="progress mb-2">
+            <div class="progress-bar bg-warning" [style.width.%]="getLevelProgressPercentage('medium')">
+              {{ getLevelProgressPercentage('medium') }}%
+            </div>
+          </div>
+          <p class="card-text">{{ stats.medium.completed }} / {{ stats.medium.total }}</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title text-danger">Hard</h5>
+          <div class="progress mb-2">
+            <div class="progress-bar bg-danger" [style.width.%]="getLevelProgressPercentage('hard')">
+              {{ getLevelProgressPercentage('hard') }}%
+            </div>
+          </div>
+          <p class="card-text">{{ stats.hard.completed }} / {{ stats.hard.total }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chapter Filter -->
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <div class="btn-group" role="group">
+        <button 
+          class="btn"
+          [class.btn-primary]="!selectedChapter"
+          [class.btn-outline-primary]="selectedChapter"
+          (click)="selectedChapter = ''"
+        >
+          All Topics
+        </button>
+        <button 
+          *ngFor="let chapter of chapters"
+          class="btn"
+          [class.btn-primary]="selectedChapter === chapter"
+          [class.btn-outline-primary]="selectedChapter !== chapter"
+          (click)="selectedChapter = chapter"
+        >
+          {{ chapter }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Problems Table -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <h4>DSA Problems</h4>
+        </div>
+        <div class="card-body">
+          <div *ngIf="loading" class="text-center">
+            <div class="spinner-border" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+          
+          <div *ngIf="!loading" class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th width="5%">Status</th>
+                  <th width="25%">Problem</th>
+                  <th width="15%">Chapter</th>
+                  <th width="10%">Difficulty</th>
+                  <th width="45%">Resources</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let problem of getFilteredProblems()">
+                  <td>
+                    <div class="form-check">
+                      <input 
+                        class="form-check-input" 
+                        type="checkbox"
+                        [checked]="isCompleted(problem._id)"
+                        (change)="toggleProgress(problem._id)"
+                      >
+                    </div>
+                  </td>
+                  <td>
+                    <strong>{{ problem.title }}</strong>
+                  </td>
+                  <td>
+                    <span class="badge bg-secondary">{{ problem.chapter }}</span>
+                  </td>
+                  <td>
+                    <span 
+                      class="badge"
+                      [class.bg-success]="problem.level === 'Easy'"
+                      [class.bg-warning]="problem.level === 'Medium'"
+                      [class.bg-danger]="problem.level === 'Hard'"
+                    >
+                      {{ problem.level }}
+                    </span>
+                  </td>
+                  <td>
+                    <a 
+                      [href]="problem.youtubeLink" 
+                      target="_blank" 
+                      class="btn btn-sm btn-danger me-2"
+                      *ngIf="problem.youtubeLink"
+                    >
+                      <i class="fab fa-youtube"></i> Video
+                    </a>
+                    <a 
+                      [href]="problem.leetcodeLink" 
+                      target="_blank" 
+                      class="btn btn-sm btn-warning me-2"
+                      *ngIf="problem.leetcodeLink"
+                    >
+                      <i class="fas fa-code"></i> Practice
+                    </a>
+                    <a 
+                      [href]="problem.articleLink" 
+                      target="_blank" 
+                      class="btn btn-sm btn-info"
+                      *ngIf="problem.articleLink"
+                    >
+                      <i class="fas fa-book"></i> Article
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
